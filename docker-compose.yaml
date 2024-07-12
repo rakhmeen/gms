@@ -10,12 +10,12 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: horrain
+      POSTGRES_DB: meen
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 1
     ports:
       - "5432:5432"
     restart: always
@@ -26,14 +26,14 @@ services:
       dockerfile: Dockerfile
     container_name: "fastapi"
     volumes:
-      - .:/idk
+      - .:/app
     ports:
       - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:1234@postgres:5432/horrain
+      DATABASE_URL: postgresql+asyncpg://postgres:1234@postgres:5432/meen
     restart: always
 
 volumes:
