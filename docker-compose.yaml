@@ -3,14 +3,14 @@ version: '3.9'
 services:
   postgres:
     image: postgis/postgis:13-3.1
-    container_name: "postgres"
+    container_name: "postgres_container"
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgsed_data:/var/lib/postgresql/data
+      - ./initialization.sql:/docker-entrypoint-initdb.d/initialization.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: meen
+      POSTGRES_DB: aeroplane
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -24,17 +24,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: "fastapi"
+    container_name: "fastapi_container"
     volumes:
-      - .:/app
+      - .:/appy
     ports:
       - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:1234@postgres:5432/meen
+      DATABASE_URL: postgresql+asyncpg://postgres:1234@postgres_container:5432/aeroplane
     restart: always
 
 volumes:
-  postgres_data:
+  pgsed_data:
